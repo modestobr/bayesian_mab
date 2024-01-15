@@ -3,10 +3,10 @@ from typing import List, Union
 
 import numpy as np
 
-from baylatron.arm import BaseArm, BayesianArm
-from baylatron.contrib.logger import logger
-from baylatron.finisher import BayesianFinisher
-from baylatron.reward import BinaryReward, DiscreteReward
+from multi_armed_bandit.arm import BaseArm, BayesianArm
+from multi_armed_bandit.contrib.logger import logger
+from multi_armed_bandit.finisher import BayesianFinisher
+from multi_armed_bandit.reward import BinaryReward, DiscreteReward
 
 
 class BaseMAB:

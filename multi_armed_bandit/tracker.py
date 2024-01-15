@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from baylatron.models import BayesianFinishIteration
+from multi_armed_bandit.models import BayesianFinishIteration
 
 
 class RewardTracker:

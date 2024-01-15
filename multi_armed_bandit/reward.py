@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import List
 
-from baylatron.models import Reward
+from multi_armed_bandit.models import Reward
 
 
 class BaseReward:

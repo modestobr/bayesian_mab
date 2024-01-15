@@ -4,10 +4,10 @@ from typing import List, Tuple
 import pandas as pd
 from scipy.stats import beta, ttest_1samp
 
-from baylatron.arm import BayesianArm
-from baylatron.contrib.calc_bayesian_prob import calc_prob_between
-from baylatron.contrib.logger import logger
-from baylatron.tracker import FinisherTracker
+from multi_armed_bandit.arm import BayesianArm
+from multi_armed_bandit.contrib.calc_bayesian_prob import calc_prob_between
+from multi_armed_bandit.contrib.logger import logger
+from multi_armed_bandit.tracker import FinisherTracker
 
 
 class BaseFinisher:

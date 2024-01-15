@@ -3,7 +3,7 @@ from abc import abstractmethod
 import names
 import numpy as np
 
-from baylatron.tracker import RewardTracker
+from multi_armed_bandit.tracker import RewardTracker
 
 
 class BaseArm:
