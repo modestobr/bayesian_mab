@@ -1,8 +1,9 @@
 from abc import abstractmethod
-from baylatron.tracker import RewardTracker
+
 import names
 import numpy as np
-import pandas as pd
+
+from baylatron.tracker import RewardTracker
 
 
 class BaseArm:
@@ -24,26 +25,32 @@ class BaseArm:
 
     @abstractmethod
     def sample_value(self):
+        """Sample a value from the arm"""
         return
 
     @abstractmethod
     def record_success(self):
+        """Record a success for the arm"""
         return
 
     @abstractmethod
     def record_failure(self):
+        """Record a failure for the arm"""
         return
 
     @abstractmethod
     def read_brute_reward(self):
+        """Read the brute reward"""
         pass
 
     @abstractmethod
     def average(self):
+        """Return the average reward"""
         pass
 
     @abstractmethod
     def update_reward(self):
+        """Update the arm's reward"""
         pass
 
 
@@ -68,17 +75,22 @@ class BayesianArm(BaseArm):
         )
 
     def record_success(self):
+        """Record a success for the arm, updating alpha parameter from beta distribution"""
         self.a += 1
 
     def record_failure(self):
+        """Record a failure for the arm, updating beta parameter from beta distribution"""
         self.b += 1
 
     def sample_value(self):
+        """Sample a random value from the beta distribution"""
         return np.random.beta(self.a, self.b, 1)[0]
 
     def average(self):
+        """Calculate the average reward"""
         return self.a / (self.a + self.b)
 
     def update_reward(self):
+        """Update the arm's reward"""
         self.current_reward = self.average()
         return

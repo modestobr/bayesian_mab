@@ -1,12 +1,10 @@
 from abc import abstractclassmethod
 from typing import List, Tuple
+
 import pandas as pd
-import numpy as np
-from scipy.stats import ttest_1samp
+from scipy.stats import beta, ttest_1samp
 
 from baylatron.arm import BayesianArm
-from scipy.stats import beta
-import numpy as np
 from baylatron.contrib.calc_bayesian_prob import calc_prob_between
 from baylatron.contrib.logger import logger
 from baylatron.tracker import FinisherTracker
@@ -14,8 +12,7 @@ from baylatron.tracker import FinisherTracker
 
 class BaseFinisher:
     """
-    End the execution of the tests, given the criteria
-    of implemented stop
+    Base class for Finishers
     """
 
     @abstractclassmethod
@@ -24,22 +21,42 @@ class BaseFinisher:
 
     @abstractclassmethod
     def check_for_end(self):
+        """Test used for determining finish"""
         pass
 
     @abstractclassmethod
     def run(self):
+        """Main orchestration method for finish determination"""
         pass
 
 
 class BayesianFinisher(BaseFinisher):
+    """
+    Aims to determine if there is a winner between a set of arms
+    This uses Exact Calculation of Beta Inequalities from https://www.johndcook.com/UTMDABTR-005-05.pdf.
+    """
+
     def __init__(self):
         self.history_tracker = FinisherTracker()
 
     @staticmethod
     def check_for_end(a: int, b: int, c: int, d: int) -> Tuple[float, float]:
         """
-        Beta(a,b)
-        Beta(c,d)
+        Calculate the probability and lift of two bayesian arms using
+        Exact Calculation of Beta Inequalities from https://www.johndcook.com/UTMDABTR-005-05.pdf.
+
+        The comparison arm is given by Beta(a,b)
+        The reference arm is given by Beta(c,d)
+
+        Args:
+            a: alpha of comparison arm
+            b: beta of comparison arm
+            c: alpha of reference arm
+            d: beta of reference arm
+
+        Returns:
+            prob: probability of comparison arm being better than reference arm
+            lift: lift of comparison arm over reference arm
         """
         # here we create the Beta functions for the two sets
         beta_C = beta(c, d)
@@ -57,6 +74,10 @@ class BayesianFinisher(BaseFinisher):
         return prob, lift
 
     def check_for_winner(self, winner_prob_threshold: float):
+        """
+        Check if there is a winner based on the probability threshold
+        and the bayesian arms probabilities
+        """
         df = pd.DataFrame([c.dict() for c in self.history_tracker.finisher_results])
         df_check = df.groupby(["arm_comp"])["prob"].min().reset_index()
 
@@ -65,6 +86,9 @@ class BayesianFinisher(BaseFinisher):
         return flg_end
 
     def get_current_winner(self):
+        """
+        Determine the current winner based on the results of exact calculation of beta inequalities
+        """
         df = pd.DataFrame([c.dict() for c in self.history_tracker.finisher_results])
         df_check = df.groupby(["arm_comp"])["prob"].mean().reset_index()
 
@@ -76,6 +100,19 @@ class BayesianFinisher(BaseFinisher):
         current_iteration: int,
         winner_prob_threshold: 0.80,
     ) -> bool:
+        """ "
+        Run the finisher, checking for a winner between a set of arms given
+        a probability threshold.
+
+        Args:
+            arms: list of arms
+            current_iteration: current iteration
+            winner_prob_threshold: probability threshold for winner
+
+        Returns:
+            flg_winner: flag for winner
+            current_winner: current winner
+        """
         arms_combinations = [
             (arm_comp, arm_base)
             for arm_comp in arms
@@ -94,5 +131,4 @@ class BayesianFinisher(BaseFinisher):
         flg_winner = self.check_for_winner(winner_prob_threshold)
         current_winner = self.get_current_winner()
 
-        print(flg_winner, current_winner)
         return flg_winner, current_winner

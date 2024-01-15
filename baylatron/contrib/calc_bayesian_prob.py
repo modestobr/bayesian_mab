@@ -6,8 +6,9 @@ Source: https://gist.github.com/vlavorini/41d5440d107cc19453c862458804787c#file-
 """
 
 from math import lgamma
-from numba import jit
+
 import numpy as np
+from numba import jit
 
 
 # defining the functions used

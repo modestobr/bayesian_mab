@@ -1,27 +1,36 @@
 from abc import abstractmethod
-from typing import Union, List
-from baylatron.reward import BinaryReward, DiscreteReward
-from baylatron.arm import BayesianArm, BaseArm
+from typing import List, Union
+
 import numpy as np
-import pandas as pd
-from baylatron.finisher import BayesianFinisher
+
+from baylatron.arm import BaseArm, BayesianArm
 from baylatron.contrib.logger import logger
+from baylatron.finisher import BayesianFinisher
+from baylatron.reward import BinaryReward, DiscreteReward
 
 
 class BaseMAB:
+    """
+    Base class for Multi Armed Bandits
+    """
+
     def __init__(self, arms: BaseArm):
         self.arms = arms
+        self.current_winner = None
 
     @property
     def number_times_used(self) -> int:
+        """Number of times all arms have been used"""
         return sum([len(arm.reward_tracker.brute_rewards) for arm in self.arms])
 
     @abstractmethod
     def sample_an_arm(self):
+        """Sample an arm from the available arms"""
         pass
 
     @abstractmethod
     def update_arm(self):
+        """Update the arm with the reward"""
         pass
 
     def _infer_index(self, iteration_index=None):
@@ -36,6 +45,10 @@ class BaseMAB:
 
 
 class BayesianMAB(BaseMAB):
+    """
+    Bayesian Multi Armed Bandit
+    """
+
     def __init__(self, arms: List[BayesianArm]):
         super().__init__(arms=arms)
 
@@ -48,9 +61,12 @@ class BayesianMAB(BaseMAB):
         )
         return rpr
 
-    def sample_an_arm(self):
+    def sample_an_arm(self) -> int:
         """
         Choose an arm to sample from available arms given a sampled probability
+
+        Returns:
+            arm_index: index of arm to sample
         """
         arm_index = np.argmax([arm.sample_value() for arm in self.arms])
 
@@ -62,7 +78,11 @@ class BayesianMAB(BaseMAB):
         reward_agent: Union[BinaryReward, DiscreteReward],
     ):
         """
-        Update chosen arm, following some logic
+        Update the arm with the reward
+
+        Args:
+            chosen_arm: arm to update
+            reward_agent: reward agent
         """
         reward_value = reward_agent.reward_value
 
@@ -83,11 +103,22 @@ class BayesianMAB(BaseMAB):
 
         return
 
-    def check_for_end(self, **kwargs):
-        flg_end, current_winner = self.finisher.run(
+    def check_for_end(self, **kwargs) -> bool:
+        """ "
+        Run the finisher, checking for a winner between a set of arms given
+        a probability threshold.
+
+        Args:
+            kwargs: kwargs for finisher
+
+        Returns:
+            flg_winner: flag for winner
+            current_winner: current winner
+        """
+        flg_end, self.current_winner = self.finisher.run(
             arms=self.arms, current_iteration=self.number_times_used, **kwargs
         )
-        logger.info(f"flg_end: {flg_end}, Winner: {current_winner}")
+        logger.info(f"flg_end: {flg_end}, Winner: {self.current_winner}")
         return flg_end
 
 
