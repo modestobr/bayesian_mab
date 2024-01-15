@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import List, Union
+from typing import List, Union, Tuple
 
 import numpy as np
 
@@ -17,6 +17,7 @@ class BaseMAB:
     def __init__(self, arms: BaseArm):
         self.arms = arms
         self.current_winner = None
+        self.minimum_interation = 500
 
     @property
     def number_times_used(self) -> int:
@@ -32,16 +33,6 @@ class BaseMAB:
     def update_arm(self):
         """Update the arm with the reward"""
         pass
-
-    def _infer_index(self, iteration_index=None):
-        """Check for all arms rewards,
-        if missing, return index 0, if not, return
-        bigger index observed"""
-
-        if iteration_index != None:
-            return iteration_index
-
-        return sum([len(arm.reward_tracker.brute_rewards) for arm in self.arms])
 
 
 class BayesianMAB(BaseMAB):
@@ -103,7 +94,7 @@ class BayesianMAB(BaseMAB):
 
         return
 
-    def check_for_end(self, **kwargs) -> bool:
+    def check_for_end(self, **kwargs) -> Tuple[bool, str]:
         """ "
         Run the finisher, checking for a winner between a set of arms given
         a probability threshold.
@@ -115,11 +106,17 @@ class BayesianMAB(BaseMAB):
             flg_winner: flag for winner
             current_winner: current winner
         """
+        if self.number_times_used < self.minimum_interation:
+            logger.info(
+                f"Number of times used {self.number_times_used} is less than minimum {self.minimum_interation}"
+            )
+            return False, None
+        
         flg_end, self.current_winner = self.finisher.run(
             arms=self.arms, current_iteration=self.number_times_used, **kwargs
         )
         logger.info(f"flg_end: {flg_end}, Winner: {self.current_winner}")
-        return flg_end
+        return flg_end, self.current_winner
 
 
 if __name__ == "__main__":
@@ -139,13 +136,13 @@ if __name__ == "__main__":
 
     for i in range(4):
         binary_reward.update_reward(np.random.binomial(1, p=0.9))
-        bayesian_mab.update_arm(chosen_arm=1, reward_agent=binary_reward)
+        bayesian_mab.update_arm(chosen_arm=0, reward_agent=binary_reward)
 
-    for i in range(1500):
+    for i in range(10):
         binary_reward.update_reward(np.random.binomial(1, p=0.3))
         bayesian_mab.update_arm(chosen_arm=1, reward_agent=binary_reward)
 
-    for i in range(1500):
+    for i in range(500):
         binary_reward.update_reward(np.random.binomial(1, p=0.9))
         bayesian_mab.update_arm(chosen_arm=2, reward_agent=binary_reward)
 

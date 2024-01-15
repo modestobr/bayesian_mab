@@ -1,8 +1,6 @@
 from abc import abstractmethod
 from typing import List
 
-from multi_armed_bandit.models import Reward
-
 
 class BaseReward:
     """

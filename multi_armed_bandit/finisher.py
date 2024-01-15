@@ -85,9 +85,12 @@ class BayesianFinisher(BaseFinisher):
 
         return flg_end
 
-    def get_current_winner(self):
+    def get_current_winner(self) -> str:
         """
         Determine the current winner based on the results of exact calculation of beta inequalities
+
+        Returns:
+            current_winner: current winner
         """
         df = pd.DataFrame([c.dict() for c in self.history_tracker.finisher_results])
         df_check = df.groupby(["arm_comp"])["prob"].mean().reset_index()
@@ -99,7 +102,7 @@ class BayesianFinisher(BaseFinisher):
         arms: List[BayesianArm],
         current_iteration: int,
         winner_prob_threshold: 0.80,
-    ) -> bool:
+    ) -> Tuple[bool, str]:
         """ "
         Run the finisher, checking for a winner between a set of arms given
         a probability threshold.
