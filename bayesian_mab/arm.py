@@ -3,7 +3,7 @@ from abc import abstractmethod
 import names
 import numpy as np
 
-from multi_armed_bandit.tracker import RewardTracker
+from bayesian_mab.tracker import RewardTracker
 
 
 class BaseArm:

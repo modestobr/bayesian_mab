@@ -3,10 +3,10 @@ from typing import List, Union, Tuple
 
 import numpy as np
 
-from multi_armed_bandit.arm import BaseArm, BayesianArm
-from multi_armed_bandit.contrib.logger import logger
-from multi_armed_bandit.finisher import BayesianFinisher
-from multi_armed_bandit.reward import BinaryReward, DiscreteReward
+from bayesian_mab.arm import BaseArm, BayesianArm
+from bayesian_mab.contrib.logger import logger
+from bayesian_mab.finisher import BayesianFinisher
+from bayesian_mab.reward import BinaryReward, DiscreteReward
 
 
 class BaseMAB:

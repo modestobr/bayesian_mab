@@ -4,10 +4,10 @@ from typing import List, Tuple
 import pandas as pd
 from scipy.stats import beta, ttest_1samp
 
-from multi_armed_bandit.arm import BayesianArm
-from multi_armed_bandit.contrib.calc_bayesian_prob import calc_prob_between
-from multi_armed_bandit.contrib.logger import logger
-from multi_armed_bandit.tracker import FinisherTracker
+from bayesian_mab.arm import BayesianArm
+from bayesian_mab.contrib.calc_bayesian_prob import calc_prob_between
+from bayesian_mab.contrib.logger import logger
+from bayesian_mab.tracker import FinisherTracker
 
 
 class BaseFinisher:

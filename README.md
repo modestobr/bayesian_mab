@@ -12,9 +12,15 @@ Between several use cases, we can highlight
 - Clinical trials
 
 ## 💻 Example Usage
+For Bayesian Multi Armed Bandits (MAB), first define initialize the BayesianMAB and provide it the arm object with an index and a provided name, this will be useful for determining the winner later on.
+
+We provide an example of for loops giving positive (1) and negative (0) rewards to each arm, you can add it as you want.
+
+At any moment, we can check it we already have a winner, using the BayesianMAB.check_for_end method.
 
 ```python
-from multi_armed_bandit import BayesianMAB, BinaryReward
+from bayesian_mab import BayesianMAB, BinaryReward
+import numpy as np
 
 binary_reward = BinaryReward()
 
