@@ -34,7 +34,7 @@ bayesian_mab = BayesianMAB(
 
 for i in range(4):
     binary_reward.update_reward(np.random.binomial(1, p=0.9))
-    bayesian_mab.update_arm(chosen_arm=1, reward_agent=binary_reward)
+    bayesian_mab.update_arm(chosen_arm=0, reward_agent=binary_reward)
 
 for i in range(1500):
     binary_reward.update_reward(np.random.binomial(1, p=0.3))
@@ -55,5 +55,6 @@ print("Is there a winner? {}. Winner: {}".format(flg_end, winner_arm))
 - Cook, J., 2005. **Exact calculation of beta inequalities**. Houston: University of Texas, MD Anderson Cancer Center. Available [here](https://www.johndcook.com/UTMDABTR-005-05.pdf)
 - Slivkins, A., 2019. **Introduction to multi-armed bandits**. Foundations and Trends® in Machine Learning, 12(1-2), pp.1-286. Available [here](https://www.nowpublishers.com/article/Details/MAL-068)
 - White, J., 2013. **Bandit algorithms for website optimization.** " O'Reilly Media, Inc.".
+- Bruce, P., Bruce, A. and Gedeck, P., 2020. **Practical statistics for data scientists: 50+ essential concepts using R and Python**. O'Reilly Media.
 - Praise on Vincenzo Lavorini for [this](https://towardsdatascience.com/bayesian-a-b-testing-with-python-the-easy-guide-d638f89e0b8a) Towards Data Science blog post.
 
