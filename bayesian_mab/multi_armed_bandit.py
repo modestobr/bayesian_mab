@@ -111,7 +111,7 @@ class BayesianMAB(BaseMAB):
                 f"Number of times used {self.number_times_used} is less than minimum {self.minimum_interation}"
             )
             return False, None
-        
+
         flg_end, self.current_winner = self.finisher.run(
             arms=self.arms, current_iteration=self.number_times_used, **kwargs
         )

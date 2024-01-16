@@ -13,6 +13,7 @@ with open("requirements.txt") as fh:
 with open("./bayesian_mab/VERSION") as fh:
     version = fh.read()
 
+
 def get_requirements() -> List[str]:
     if os.path.exists("requirements.txt"):
         requirements_path = "requirements.txt"
@@ -21,7 +22,9 @@ def get_requirements() -> List[str]:
 
     with open(requirements_path, encoding="utf8") as config_file:
         requirements = config_file.read().splitlines()
-    return [requirement for requirement in requirements if not requirement.startswith("--")]
+    return [
+        requirement for requirement in requirements if not requirement.startswith("--")
+    ]
 
 
 setuptools.setup(
@@ -32,17 +35,24 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/modestobr/bayesian_multi_armed_bandit",
-    packages=setuptools.find_packages(
-        exclude=["docs"]
-    ),
+    packages=setuptools.find_packages(exclude=["docs"]),
     data_files=["bayesian_mab/VERSION"],
     include_package_data=True,
+    python_requires=">=3.8",
+    install_requires=get_requirements(),
+    dependency_links=[],
+    keywords=[
+        "Bayesian Inference",
+        "Multi Armed Bandit",
+        "Reinforcement Learning",
+        "Website optimization",
+        "A/B Testing",
+        "Online Advertising",
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
+        "Development Status :: 1 - Planning",
     ],
-    python_requires=">=3.8",
-    install_requires=get_requirements(),
-    dependency_links=[],
 )
